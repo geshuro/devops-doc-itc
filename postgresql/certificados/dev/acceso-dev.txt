@@ -1,0 +1,20 @@
+Base de datos desarrollo para Integra-CAM:
+
+Servidor PostgreSQL v14
+
+Host: 10.36.9.102
+Port: 6432
+
+Usuario: administrador
+Contraseña: admin2022
+Rol: SuperUser
+
+Usuario: desarrollo
+Contraseña: dev2022
+Base de datos: bddev
+Rol: NoSuperUser
+
+Usuario: devops
+Contraseña: devops2022
+Base de datos: bddevops
+Rol: NoSuperUser
