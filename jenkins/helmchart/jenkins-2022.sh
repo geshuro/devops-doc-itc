@@ -53,8 +53,7 @@ helm upgrade jenkins --namespace jenkins \
     jenkins/jenkins;
 
 #Uninstall
-helm uninstall jenkins
-
+helm delete jenkins --namespace jenkins
 #Autenticacion
 user:
 admin
@@ -67,3 +66,10 @@ NODE_IP:
 10.36.9.8
 
 http://10.36.9.8:31475/login
+
+
+####################################################################################
+#CREAR SECRETO EN EKS PARA KANICO
+####################################################################################
+kubectl create secret docker-registry regcred --docker-username=docker-jenkins --docker-password=123Admin. --docker-server=artifactory-jcr.integracam.int --docker-email=docker-jenkins@localhost.com -n jenkins
+http://artifactory-oss.integracam.int/ui/admin/repositories/local/docker-images-test
