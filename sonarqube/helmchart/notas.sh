@@ -37,7 +37,7 @@ NOTES:
 
 
 #Uninstall
-helm uninstall sonarqube
+helm uninstall sonarqube -n sonarqube
 
 #Autenticacion
 user:
