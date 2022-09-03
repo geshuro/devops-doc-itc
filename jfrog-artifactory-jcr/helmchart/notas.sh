@@ -29,7 +29,7 @@ helm upgrade --install jfrog-container-registry \
 
 
 #Uninstall
-helm uninstall artifactory-oss
+helm delete jfrog-container-registry --namespace artifactory-jcr  
 
 #Autenticacion
 user:
