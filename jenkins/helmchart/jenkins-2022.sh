@@ -16,6 +16,13 @@ git clone https://github.com/jenkinsci/helm-charts.git
 
 helm repo add jenkins https://charts.jenkins.io
 
+#modificar values-itc.yaml
+installPlugins:
+    - kubernetes:3600.v144b_cd192ca_a_
+    - workflow-aggregator:581.v0c46fa_697ffd
+    - git:4.11.3
+    - configuration-as-code:1512.vb_79d418d5fc8
+    #- configuration-as-code:1429.v09b_044a_c93de por error al iniciar contenedor init, problemas dependencias
 #install
 helm install jenkins --namespace jenkins \
     -f values-itc.yaml \
