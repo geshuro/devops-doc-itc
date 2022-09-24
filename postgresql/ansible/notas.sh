@@ -4,8 +4,13 @@
 ####################################################################################
 ssh -i "atos-integracam-kp-dev-bastion-devops.pem" ubuntu@10.36.9.104
 ####################################################################################
+# Conectar a PostgreSQL dev
 ssh  centos@10.36.9.102
-
+####################################################################################
+# Permisos root
+su - root
+pass: admin
+####################################################################################
 vi /var/lib/pgsql/14/data/postgresql.conf
 max_connections = '500'
 
@@ -24,7 +29,7 @@ unix_socket_dir = /var/run/postgresql
 auth_type = scram-sha-256
 auth_file = /etc/pgbouncer/userlist.txt
 admin_users = postgres
-ignore_startup_parameters = extra_float_digits,geqo
+ignore_startup_parameters = search_path,extra_float_digits,geqo
 
 pool_mode = session
 server_reset_query = DISCARD ALL
@@ -79,3 +84,44 @@ psql -U postgres -p 6432 pgbouncer
 pass: postgres-pass
 SHOW STATS_TOTALS;
 show pools;
+
+
+####################################################################################
+# Setear valor search_path en pgbouncer
+####################################################################################
+# Causa
+####################################################################################
+## se modifica porque helmchart KeyCLOAK no logra instalar por el error:
+## HHH000342: Could not obtain connection to query metadata: org.postgresql.util.PSQLException: FATAL: unsupported startup parameter: search_path
+####################################################################################
+### Ingresar a servidor postgresql
+ssh  centos@10.36.9.102
+####################################################################################
+### Permisos root
+su - root
+pass: admin
+####################################################################################
+### agregar search_path a ignore_startup_parameters
+####################################################################################
+vi /etc/pgbouncer/pgbouncer.ini
+####################################################################################
+### Archivo luego de modificar
+[pgbouncer]
+logfile = /var/log/pgbouncer/pgbouncer.log
+pidfile = /var/run/pgbouncer/pgbouncer.pid
+listen_addr = 10.36.9.102
+listen_port = 6432
+unix_socket_dir = /var/run/postgresql
+auth_type = scram-sha-256
+auth_file = /etc/pgbouncer/userlist.txt
+admin_users = postgres
+ignore_startup_parameters = search_path,extra_float_digits,geqo
+####################################################################################
+### Reiniciar servicio pgbouncer
+systemctl restart pgbouncer
+####################################################################################
+### Agregar cambios a helmchart postgresql
+# PgBouncer parameters
+pgbouncer_ignore_startup_parameters: "search_path,extra_float_digits,geqo"
+####################################################################################
+### Reinstalar helmchart postgresql
