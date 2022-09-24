@@ -68,7 +68,7 @@ ldapsearch -x -H ldap://localhost:3890 -b dc=integracam,dc=org -D "cn=admin,dc=i
 # Check who am I
 ldapwhoami -x -H ldap://localhost:3890
 # test PHP Admin
-kubectl port-forward openldap-phpldapadmin-56b5b85455-7qc8t  8080:80 -n openldap
+kubectl port-forward openldap-phpldapadmin-56b5b85455-t7jld  8080:80 -n openldap
 # crear user por web
 
 #Fuente:
