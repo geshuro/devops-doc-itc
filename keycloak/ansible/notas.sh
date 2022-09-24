@@ -51,6 +51,14 @@ To access Keycloak from outside the cluster execute the following commands:
   echo Password: $(kubectl get secret --namespace keycloak keycloak -o jsonpath="{.data.admin-password}" | base64 -d)
 
 # Testing
+kubectl logs keycloak-0 -n keycloak -o wide
+http://10.36.9.113:30001/
+Username: user
+pass: Admin2022.
+
+
+
+
 
 # Desinstalar
 helm delete keycloak --namespace keycloak
@@ -65,3 +73,27 @@ https://artifacthub.io/packages/helm/bitnami/keycloak/9.7.4
 ####################################################################################
 ssh -i "atos-integracam-eks-devops.pem" ubuntu@10.36.9.48
 ssh -i "atos-integracam-eks-devops.pem" root@10.36.9.48
+
+
+####################################################################################
+## Configure Keycloak
+####################################################################################
+Create Realm: Business
+
+Create User Federation:
+Connection URL:
+ldap://openldap.openldap.svc.cluster.local
+Users DN:
+ou=People,dc=integracam,dc=org
+Bind DN:
+cn=admin,dc=integracam,dc=org
+Bind Credential:
+Not@SecurePassw0rd
+
+####################################################################################
+## Fuentes
+####################################################################################
+https://medium.com/linkbynet/kubernetes-sso-using-keycloak-aafdb730d192
+https://github.com/tperelle/keycloak-federation#deploy-a-secured-application
+#paso a paso
+https://github.com/tperelle/keycloak-federation/tree/main/lab
