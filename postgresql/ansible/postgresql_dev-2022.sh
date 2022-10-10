@@ -125,6 +125,7 @@ error failed: [10.36.9.102] (item=python3-psycopg2)
 ####
 #Seguir: https://www.crunchydata.com/developers/download-postgres/binaries/psycopg2
 #Entrar al servidor remoto como root
+# 20221009 no hacer esto porque redhat ya agrego, y mas bien comentar el /etc/yum.repos.d/pgdg-redhat-all.repo ---> [pgdg15] enabled
 yum install wget -y
 wget https://api.developers.crunchydata.com/downloads/repo/rpm-centos/postgresql14/crunchypg14.repo
 wget https://api.developers.crunchydata.com/downloads/gpg/RPM-GPG-KEY-crunchydata-dev
