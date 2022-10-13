@@ -597,8 +597,65 @@ helm repo update
 helm upgrade --install jfrog-container-registry \
     --namespace artifactory-jcr jfrog/artifactory-jcr \
     -f values-itc.yaml
-#Postinstalacion
-
-
 #Uninstall
 helm delete jfrog-container-registry --namespace artifactory-jcr  
+
+# Acceso
+user: admin
+pass: Admin2022.
+http://artifactory-jcr.atos-integracam.int/
+http://a1d28322cb41842dda29f12aa984e8b3-1977519743.eu-west-1.elb.amazonaws.com/
+
+######################################################################################
+# artifactory-jcr
+######################################################################################
+# Crear Namespace
+kubectl create namespace artifactory-oss
+#clonar helmchart
+#solo descargar
+#Helmchart
+#wget https://charts.jfrog.io/artifactory-oss-3.18.12.tgz
+#tar zxvf artifactory-oss-3.18.12.tgz
+#values artifactory-oss/charts/artifactory/values.yaml
+#crear artifactory-oss/charts/artifactory/values-itc.yaml
+helm repo add jfrog https://charts.jfrog.io
+helm repo update
+#install
+helm upgrade --install artifactory-oss \
+    --namespace artifactory-oss jfrog/artifactory-oss \
+    -f values-itc.yaml
+#Uninstall
+helm delete artifactory-oss --namespace artifactory-oss 
+# Acceso
+user: admin
+pass: Admin2022.
+http://artifactory-oss.atos-integracam.int/
+http://a573ae2ad6639479580931a3638a98b9-1524986436.eu-west-1.elb.amazonaws.com/
+######################################################################################
+# sonarqube
+######################################################################################
+# Crear Namespace
+kubectl create namespace sonarqube
+#clonar helmchart
+#solo descargar
+#Helmchart
+git clone https://github.com/SonarSource/helm-chart-sonarqube.git
+#Helmchart
+#https://github.com/SonarSource/helm-chart-sonarqube/tree/master/charts/sonarqube
+#values
+#https://github.com/SonarSource/helm-chart-sonarqube/blob/master/charts/sonarqube/values.yaml
+#crear helm-chart-sonarqube/charts/sonarqube/values-itc.yaml
+helm repo add sonarqube https://SonarSource.github.io/helm-chart-sonarqube
+helm repo update
+#install
+helm upgrade --install -n sonarqube sonarqube sonarqube/sonarqube -f values-itc.yaml
+#Uninstall
+helm uninstall sonarqube -n sonarqube
+# Acceso
+user: admin
+pass: Admin2022.
+http://sonarqube.atos-integracam.int/
+http://adaa72dfabec942828363b6042237ff4-2047265591.eu-west-1.elb.amazonaws.com/
+
+susana y josemaria
+enviar credenciales vpn
