@@ -524,7 +524,10 @@ kubectl delete pod ebs-csi-controller-* -n kube-system
 #Herramientas DevOps
 ######################################################################################
 ##conectarse a EKS
+#bastion devops
 aws eks update-kubeconfig --name "eks-devops-R4SM0zGw" --profile default --region eu-west-1
+# local
+aws eks update-kubeconfig --name "eks-devops-R4SM0zGw" --profile atos-integracam-tf-desarrollo-ireland --region eu-west-1
 ######################################################################################
 # Jenkins
 ######################################################################################
@@ -657,5 +660,40 @@ pass: Admin2022.
 http://sonarqube.atos-integracam.int/
 http://adaa72dfabec942828363b6042237ff4-2047265591.eu-west-1.elb.amazonaws.com/
 
-susana y josemaria
-enviar credenciales vpn
+
+
+######################################################################################
+# SonarQube pod no inicia porque PVC esta en otra zona
+######################################################################################
+# Fuente solucion
+# https://stackoverflow.com/questions/51946393/kubernetes-pod-warning-1-nodes-had-volume-node-affinity-conflict
+# verificar el valor del label de los nodos EKS 
+kubectl describe node ip-10-36-9-12.eu-west-1.compute.internal
+failure-domain.beta.kubernetes.io/zone=eu-west-1a
+topology.kubernetes.io/zone=eu-west-1a
+# verificar el label del PVC
+# kubectl describe pv pvc-d1908001-7e50-4ef8-9fd1-5ee581df69cc -n sonarqube
+Labels:            topology.kubernetes.io/region=eu-west-1
+                   topology.kubernetes.io/zone=eu-west-1b
+# Cambiar el storage class para solo programe en la zona disponible de los nodos
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp2
+  ...
+allowedTopologies:
+- matchLabelExpressions:
+  - key: failure-domain.beta.kubernetes.io/zone
+    values:
+    - eu-west-1a
+# aplicar cambios kubectl apply -f  storageclasses.yaml
+# desinstalar sonarqube
+# eliminar la bd con usuarios conectados
+# verificar SELECT * FROM pg_stat_activity WHERE pg_stat_activity.datname='sonarqube';
+SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'sonarqube';
+DROP DATABASE sonarqube;
+create database sonarqube
+    with owner devops;
+# instalar
+# ahora el pv se va crear en la zona disponible del nodo
+
