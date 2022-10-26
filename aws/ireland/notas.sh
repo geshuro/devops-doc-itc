@@ -552,6 +552,12 @@ installPlugins:
 helm install jenkins --namespace jenkins \
     -f values-itc.yaml \
     jenkins/jenkins;
+#upgrade version imagen contenedor por error en grupo seguridad jenkins
+helm upgrade jenkins --namespace jenkins \
+    --reuse-values \
+    --set controller.tag=2.361.2-lts-jdk17 \
+    --wait \
+    jenkins/jenkins;
 # LoadBalancer - error al crear LoadBalancer
 # error
 Error syncing load balancer: failed to ensure load balancer: Multiple tagged security groups found for instance i-0d9cb28d5b9e234a1; ensure only the k8s security group is tagged; the tagged groups were sg-026d583217898af88(eks-devops-R4SM0zGw-node-20221009054643232900000003) sg-0f4d6b44c31ff398b(eks-cluster-sg-eks-devops-R4SM0zGw-884306662)
