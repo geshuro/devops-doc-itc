@@ -313,6 +313,18 @@ ssh -i "kp-dev-kp-dev-kubernetes-exjv.pem" centos@dev-k8s-0.atos-integracam.int
 ssh -i "kp-dev-kp-dev-kubernetes-exjv.pem" centos@dev-k8s-1.atos-integracam.int
 ssh root@dev-k8s-0.atos-integracam.int
 ssh root@dev-k8s-1.atos-integracam.int
+#Kubernetes nfs dev
+#nodo-0
+vi kp-dev-kp-dev-nfs-styi.pem
+chmod 400 kp-dev-kp-dev-nfs-styi.pem
+ssh -i "kp-dev-kp-dev-nfs-styi.pem" centos@dev-nfs-0.atos-integracam.int
+ssh root@dev-nfs-0.atos-integracam.int
+#Kubernetes nfs release
+#nodo-0
+vi kp-release-kp-release-nfs-lcxi.pem
+chmod 400 kp-release-kp-release-nfs-lcxi.pem
+ssh -i "kp-release-kp-release-nfs-lcxi.pem" centos@release-nfs-0.atos-integracam.int
+ssh root@release-nfs-0.atos-integracam.int
 
 #copiar ~/.ssh/id_rsa.pub del Bastion DevOps 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCaN36WO6WgqMuIeYEUYDkA81+xdh9TgIdKxpibb4byS8+t56xtkCg4VToEWPnaVoznpxaf3rywExcRwRXhWySwGy3lhyemi0k+xN07s72gKreWZyUyZYr1iKcXqMP0gKXfg7SporQ31+m3suS6vEzUF9cm2XptEMN5dRdyTTVb9XHfcx4femrkiz638aKMGQ9+zfeJStkl2s7jeUsas3LC8E0Mh++L+sZRS0ex2b6mqyVZZC2uw6Z8JgUVtqmBl8Si+J0AeWQ4z9W5oQo882PZStoaMGLe2P3lJn0UYRCVS1oo5/W43rwY6Gi5aCi/g1WEdfRKB0ztHTOOBNP0C+bd3dpJlhsE4B/L7qkWtRXLFuThX4VWDe+KA1P+omdQ22HlmcOjBBK/rbwmqbe5Q3TUhS0+1aUezXko45DlFue/ZV4CnvgNOIWe/hFldp7jG9QspRv9knebg+osZ+u1fu5VjapNTzp3shJXKNxbjEN8RHDCUf5+Aat2LXTDi9bdLY0= ubuntu@ip-10-36-9-49
@@ -703,3 +715,184 @@ create database sonarqube
 # instalar
 # ahora el pv se va crear en la zona disponible del nodo
 
+###################################################################
+########## Ansible Kubernetes - NFS
+###################################################################
+#dev
+private_dns = [
+  "dev-nfs-0.atos-integracam.int",
+]
+private_ip = [
+  "10.36.11.112",
+]
+server_security_group_id = [
+  "sg-0e30a833233044fce",
+]
+ssh root@dev-nfs-0.atos-integracam.int
+#release
+private_dns = [
+  "release-nfs-0.atos-integracam.int",
+]
+private_ip = [
+  "10.36.13.114",
+]
+server_security_group_id = [
+  "sg-06f3c89c3ae48c330",
+]
+######################################################################################
+#Crear y ejecutar remotamente
+######################################################################################
+######################################################################################
+#/home/ubuntu/kubernetes-util/init_nfs_storage.sh
+#montar carpetas nfs storage
+#!/bin/bash
+sudo mkdir /datos
+sudo chmod 711 /datos
+sudo mkfs -t xfs /dev/xvdb
+sudo mount /dev/xvdb /datos
+sudo cp /etc/fstab /etc/fstab.orig
+sudo sed -i '$a /dev/xvdb  /datos  xfs  defaults,nofail  0 0'  /etc/fstab
+sudo umount /datos
+sudo mount -a
+df -h
+######################################################################################
+#Configurar disco para kubernetes nfs
+######################################################################################
+ssh centos@dev-nfs-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_nfs_storage.sh
+ssh centos@release-nfs-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_nfs_storage.sh
+
+#ssh centos@release-k8s-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
+######################################################################################
+#Configurar servidor NFS
+######################################################################################
+######################################################################################
+#/home/ubuntu/kubernetes-util/init_nfs_server.sh
+# manual
+#!/bin/bash
+yum -y install nfs-utils libnfsidmap
+systemctl enable rpcbind
+systemctl enable nfs-server
+systemctl start enable 
+systemctl start nfs-server
+systemctl start rpc-statd
+systemctl start nfs-idmapd
+
+mkdir /datos/professional
+mkdir /datos/patient
+
+chmod  777 /datos/professional
+chmod  777 /datos/patient
+
+#modificar /etc/exports
+vi /etc/exports
+#dev
+/datos/professional 10.36.10.0/23(rw,sync,no_root_squash)
+/datos/patient 10.36.10.0/23(rw,sync,no_root_squash)
+...
+exportfs -r
+showmount -e localhost
+...
+Export list for localhost:
+/datos/patient      10.36.10.0/23
+/datos/professional 10.36.10.0/23
+...
+#release
+/datos/professional 10.36.12.0/23(rw,sync,no_root_squash)
+/datos/patient 10.36.12.0/23(rw,sync,no_root_squash)
+...
+exportfs -r
+showmount -e localhost
+...
+Export list for localhost:
+/datos/patient      10.36.12.0/23
+/datos/professional 10.36.12.0/23
+...
+######################################################################################
+#Configurar cliente NFS en K8s
+######################################################################################
+######################################################################################
+#/home/ubuntu/kubernetes-util/k8s_client_nfs_dev.sh 
+#!/bin/bash
+# yum install -y nfs-utils libnfsidmap
+# systemctl enable rpcbind
+# systemctl start rpcbind
+# mkdir /datos
+# mkdir /datos/professional
+# mkdir /datos/patient
+# mount 10.36.11.112:/datos/professional /datos/professional
+# mount 10.36.11.112:/datos/patient /datos/patient
+# sed -i '$a 10.36.11.112:/datos/professional  /datos/professional  nfs  rw,sync,hard,intr  0 0'  /etc/fstab
+# sed -i '$a 10.36.11.112:/datos/patient  /datos/patient  nfs  rw,sync,hard,intr  0 0'  /etc/fstab
+# umount /datos/professional
+# umount /datos/patient
+# mount -a
+# mount -av
+
+######################################################################################
+#Pruebas PV PVC DEPLOY NFS
+######################################################################################
+# PersistentVolume - pv
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-professional-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: release-nfs-0.atos-integracam.int
+    path: "/datos/professional"
+  mountOptions:
+    - nfsvers=4.2
+# PersistentVolumeClaim - pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-professional-pvc
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: nfs-professional-pv
+# deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-busybox
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: nfs-busybox
+  template:
+    metadata:
+      labels:
+        name: nfs-busybox
+    spec:
+      containers:
+      - image: busybox
+        command:
+          - sh
+          - -c
+          - 'while true; do date > /mnt/index.html; hostname >> /mnt/index.html; sleep $(($RANDOM % 5 + 5)); done'
+        imagePullPolicy: IfNotPresent
+        name: busybox
+        volumeMounts:
+          - name: nfs
+            mountPath: "/mnt"
+      volumes:
+      - name: nfs
+        persistentVolumeClaim:
+          claimName: nfs-professional-pvc
+#dev
+ssh root@dev-k8s-0.atos-integracam.int
+ssh root@dev-k8s-1.atos-integracam.int
+
+kubectl exec nfs-busybox-7d7cff6d49-ff65m -- cat /mnt/index.html
