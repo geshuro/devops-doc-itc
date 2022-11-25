@@ -350,6 +350,13 @@ cd /home/ubuntu/postgresql_cluster
 vi inventory
 ###Editar variables
 vi vars/main.yml
+####################
+# PostgreSQL variables
+postgresql_version: "14"
+# postgresql_data_dir: see vars/Debian.yml or vars/RedHat.yml
+postgresql_port: "5432"
+postgresql_encoding: "UTF8"  # for bootstrap only (initdb)
+postgresql_locale: "en_US.UTF-8"  # for bootstrap only (initdb)
 
 postgresql_users: 
   - {name: "administrador", password: "admin2022", flags: "SUPERUSER"}
@@ -367,6 +374,15 @@ postgresql_schemas:
   - {schema: "devops", db: "artifactory-jcr", owner: "devops"}
   - {schema: "devops", db: "keycloak", owner: "devops"}
 
+postgresql_parameters:
+  - { option: "timezone", value: "Europe/Madrid" }
+  - { option: "log_timezone", value: "Europe/Madrid" }
+...
+###Editar variables system
+vi vars/system.yml
+##########################
+timezone: "Europe/Madrid"
+....
 #Entrar al servidor remoto como root
 ssh centos@shared-postgresql.atos-integracam.int
 yum install wget -y
@@ -403,6 +419,16 @@ failed: [10.36.11.105] (item=python3-devel) => {"ansible_loop_var": "item", "cha
 #Re- Instalar
 ##################
 ansible-playbook deploy_pgcluster.yml
+
+####################################
+# Testing Postgresql
+####################################
+psql -h dev-postgresql.atos-integracam.int -p 6432 -U desarrollo -c "select now()" -d bddev
+psql -h release-postgresql.atos-integracam.int -p 6432 -U release -c "select now()" -d bdrelease
+psql -h shared-postgresql.atos-integracam.int -p 6432 -U devops -c "select now()" -d keycloak
+
+systemctl status postgresql-14
+systemctl status pgbouncer
 
 ###################################################################
 ########## Ansible Kubernetes - KubeSpray
