@@ -5,13 +5,13 @@ ssh -i "atos-integracam-kp-dev-bastion-devops.pem" ubuntu@10.36.9.104
 ####################################################################################
 # OPEN LDAP HELMCHART
 ####################################################################################
-#helm repo add stable https://charts.helm.sh/stable
-#helm search repo -l stable/openldap
+helm repo add stable https://charts.helm.sh/stable
+helm search repo -l stable/openldap
 # Descargar repo de openldap
 git clone https://github.com/jp-gouin/helm-openldap.git
 cd helm-openldap
-helm install openldap .
-helm install --name my-release -f values.yaml stable/openldap
+#helm install openldap .
+#helm install --name my-release -f values.yaml stable/openldap
 # Crear archivo custmizar de values.yaml
 vi values-customizar.yaml
 # Crear Namespace openldap
@@ -68,7 +68,7 @@ ldapsearch -x -H ldap://localhost:3890 -b dc=integracam,dc=org -D "cn=admin,dc=i
 # Check who am I
 ldapwhoami -x -H ldap://localhost:3890
 # test PHP Admin
-kubectl port-forward openldap-phpldapadmin-56b5b85455-t7jld  8080:80 -n openldap
+kubectl port-forward openldap-phpldapadmin-56b5b85455-vcq6j  8080:80 -n openldap
 # crear user por web
 
 #Fuente:
