@@ -52,7 +52,7 @@ To access Keycloak from outside the cluster execute the following commands:
 
 # Testing
 kubectl logs keycloak-0 -n keycloak -o wide
-http://10.36.9.113:30001/
+http://keycloak.atos-integracam.int:30001/
 Username: user
 pass: Admin2022.
 
@@ -89,6 +89,20 @@ Bind DN:
 cn=admin,dc=integracam,dc=org
 Bind Credential:
 Not@SecurePassw0rd
+
+Create LDAP-Mappers/group
+LDAP Groups DN:
+ou=Group,dc=integracam,dc=org
+Group Object Classes:
+groupOfUniqueNames
+Membership LDAP Attribute:
+uniqueMember
+
+Click: Save
+
+Crear la ou
+ou=People: Para que sincronice aqui todos los usuarios.
+ou=Group: Para que sincronice aqui todos los GRUPOS.
 
 ####################################################################################
 ## Fuentes
