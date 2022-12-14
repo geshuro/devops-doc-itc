@@ -584,6 +584,7 @@ installPlugins:
     - kubernetes:3600.v144b_cd192ca_a_
     - workflow-aggregator:581.v0c46fa_697ffd
     - git:4.11.3
+    - configuration-as-code:1569.vb_72405b_80249
     - configuration-as-code:1512.vb_79d418d5fc8
     #- configuration-as-code:1429.v09b_044a_c93de por error al iniciar contenedor init, problemas dependencias
 #install
@@ -805,15 +806,21 @@ systemctl start nfs-idmapd
 
 mkdir /datos/professional
 mkdir /datos/patient
+#add mirth
+mkdir /datos/mirth
 
 chmod  777 /datos/professional
 chmod  777 /datos/patient
+#add mirth
+chmod  777 /datos/mirth
 
 #modificar /etc/exports
 vi /etc/exports
 #dev
 /datos/professional 10.36.10.0/23(rw,sync,no_root_squash)
 /datos/patient 10.36.10.0/23(rw,sync,no_root_squash)
+#add mirth
+/datos/mirth 10.36.8.0/23(rw,sync,no_root_squash)
 ...
 exportfs -r
 showmount -e localhost
