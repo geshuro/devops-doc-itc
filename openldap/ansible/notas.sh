@@ -71,6 +71,15 @@ ldapwhoami -x -H ldap://localhost:3890
 kubectl port-forward openldap-phpldapadmin-56b5b85455-vcq6j  8080:80 -n openldap
 # crear user por web
 
+
+#upgrade
+helm upgrade openldap -f values-customizar.yaml -n openldap .
+
+ldapsearch -x -H ldap://10.36.9.80:30389 -b dc=integracam,dc=org -D "cn=admin,dc=integracam,dc=org" -w Not@SecurePassw0rd
+ldapsearch -x -H ldap://shared-openldap.atos-integracam.int:30389 -b dc=integracam,dc=org -D "cn=admin,dc=integracam,dc=org" -w Not@SecurePassw0rd
+
+
+
 #Fuente:
 https://artifacthub.io/packages/helm/helm-openldap/openldap
 https://github.com/jp-gouin/helm-openldap
