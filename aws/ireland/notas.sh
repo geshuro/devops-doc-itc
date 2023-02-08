@@ -63,6 +63,15 @@ vpc_id = "vpc-09ce355d5837a20aa"
 vpc_peering_shared_id = "pcx-01037a14263dcdfb1"
 vpc_peering_shared_status = "active"
 ###################################################################
+########## Datos de VPC Pro
+###################################################################
+vpc_arn = "arn:aws:ec2:eu-west-1:841131224287:vpc/vpc-02aa8dd2d4e1c0978"
+vpc_cidr_block = "10.36.14.0/23"
+vpc_cidr_name = "vpcpro-hwv"
+vpc_id = "vpc-02aa8dd2d4e1c0978"
+vpc_peering_shared_id = "pcx-080230e59c5cc423a"
+vpc_peering_shared_status = "active"
+###################################################################
 ########## Datos de Bastion Shared
 ###################################################################
 bastion_launch_config_arn = "arn:aws:autoscaling:eu-west-1:841131224287:launchConfiguration:e325238f-ce09-4ecb-9b3b-78cd586c9359:launchConfigurationName/asg-shared-bastion-yuyr-20221007103657249300000002"
@@ -247,6 +256,19 @@ server_security_group_id = [
   "sg-041e57d3495b8e6fc",
 ]
 ###################################################################
+########## Datos de PostgreSQL Pro
+###################################################################
+#output
+postgresql_private_dns = [
+  "pro-postgresql.atos-integracam.int",
+]
+postgresql_private_ip = [
+  "10.36.15.75",
+]
+server_security_group_id = [
+  "sg-075e9c62eb0b0c535",
+]
+###################################################################
 ########## Datos de Kubernetes Dev
 ###################################################################
 #output
@@ -276,7 +298,21 @@ kubernetes_private_ip = [
 server_security_group_id = [
   "sg-0cefdf4f31431de17",
 ]
-
+###################################################################
+########## Datos de Kubernetes Pro
+###################################################################
+#output
+kubernetes_private_dns = [
+  "pro-k8s-0.atos-integracam.int",
+  "pro-k8s-1.atos-integracam.int",
+]
+kubernetes_private_ip = [
+  "10.36.15.28",
+  "10.36.15.114",
+]
+server_security_group_id = [
+  "sg-0e27c74e4de2804f1",
+]
 ###################################################################
 ########## Remotear
 ###################################################################
@@ -297,14 +333,10 @@ ssh -i "kp-dev-kp-dev-postgresql-qgmn.pem" centos@dev-postgresql.atos-integracam
 vi kp-release-kp-release-postgresql-qhag.pem
 chmod 400 kp-release-kp-release-postgresql-qhag.pem
 ssh -i "kp-release-kp-release-postgresql-qhag.pem" centos@release-postgresql.atos-integracam.int
-#Kubernetes release
-#nodo-0-1
-vi kp-release-kp-release-kubernetes-vcwy.pem
-chmod 400 kp-release-kp-release-kubernetes-vcwy.pem
-ssh -i "kp-release-kp-release-kubernetes-vcwy.pem" centos@release-k8s-0.atos-integracam.int
-ssh -i "kp-release-kp-release-kubernetes-vcwy.pem" centos@release-k8s-1.atos-integracam.int
-ssh root@release-k8s-0.atos-integracam.int
-ssh root@release-k8s-1.atos-integracam.int
+#postgresql pro
+vi kp-pro-kp-pro-postgresql-nece.pem
+chmod 400 kp-pro-kp-pro-postgresql-nece.pem
+ssh -i "kp-pro-kp-pro-postgresql-nece.pem" centos@pro-postgresql.atos-integracam.int
 #Kubernetes dev
 #nodo-0-1
 vi kp-dev-kp-dev-kubernetes-exjv.pem
@@ -313,6 +345,22 @@ ssh -i "kp-dev-kp-dev-kubernetes-exjv.pem" centos@dev-k8s-0.atos-integracam.int
 ssh -i "kp-dev-kp-dev-kubernetes-exjv.pem" centos@dev-k8s-1.atos-integracam.int
 ssh root@dev-k8s-0.atos-integracam.int
 ssh root@dev-k8s-1.atos-integracam.int
+#Kubernetes release
+#nodo-0-1
+vi kp-release-kp-release-kubernetes-vcwy.pem
+chmod 400 kp-release-kp-release-kubernetes-vcwy.pem
+ssh -i "kp-release-kp-release-kubernetes-vcwy.pem" centos@release-k8s-0.atos-integracam.int
+ssh -i "kp-release-kp-release-kubernetes-vcwy.pem" centos@release-k8s-1.atos-integracam.int
+ssh root@release-k8s-0.atos-integracam.int
+ssh root@release-k8s-1.atos-integracam.int
+#Kubernetes pro
+#nodo-0-1
+vi kp-pro-kp-pro-kubernetes-uoct.pem
+chmod 400 kp-pro-kp-pro-kubernetes-uoct.pem
+ssh -i "kp-pro-kp-pro-kubernetes-uoct.pem" centos@pro-k8s-0.atos-integracam.int
+ssh -i "kp-pro-kp-pro-kubernetes-uoct.pem" centos@pro-k8s-1.atos-integracam.int
+ssh root@pro-k8s-0.atos-integracam.int
+ssh root@pro-k8s-1.atos-integracam.int
 #Kubernetes nfs dev
 #nodo-0
 vi kp-dev-kp-dev-nfs-styi.pem
@@ -325,19 +373,25 @@ vi kp-release-kp-release-nfs-lcxi.pem
 chmod 400 kp-release-kp-release-nfs-lcxi.pem
 ssh -i "kp-release-kp-release-nfs-lcxi.pem" centos@release-nfs-0.atos-integracam.int
 ssh root@release-nfs-0.atos-integracam.int
+#Kubernetes nfs pro
+#nodo-0
+vi kp-pro-kp-pro-nfs-zuox.pem
+chmod 400 kp-pro-kp-pro-nfs-zuox.pem
+ssh -i "kp-pro-kp-pro-nfs-zuox.pem" centos@pro-nfs-0.atos-integracam.int
+ssh root@pro-nfs-0.atos-integracam.int
 
 #copiar ~/.ssh/id_rsa.pub del Bastion DevOps 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCaN36WO6WgqMuIeYEUYDkA81+xdh9TgIdKxpibb4byS8+t56xtkCg4VToEWPnaVoznpxaf3rywExcRwRXhWySwGy3lhyemi0k+xN07s72gKreWZyUyZYr1iKcXqMP0gKXfg7SporQ31+m3suS6vEzUF9cm2XptEMN5dRdyTTVb9XHfcx4femrkiz638aKMGQ9+zfeJStkl2s7jeUsas3LC8E0Mh++L+sZRS0ex2b6mqyVZZC2uw6Z8JgUVtqmBl8Si+J0AeWQ4z9W5oQo882PZStoaMGLe2P3lJn0UYRCVS1oo5/W43rwY6Gi5aCi/g1WEdfRKB0ztHTOOBNP0C+bd3dpJlhsE4B/L7qkWtRXLFuThX4VWDe+KA1P+omdQ22HlmcOjBBK/rbwmqbe5Q3TUhS0+1aUezXko45DlFue/ZV4CnvgNOIWe/hFldp7jG9QspRv9knebg+osZ+u1fu5VjapNTzp3shJXKNxbjEN8RHDCUf5+Aat2LXTDi9bdLY0= ubuntu@ip-10-36-9-49
-#en los nodos en el archivo authorized_keys como root
+#en los nodos en el archivo authorized_keys como root y centos
 sudo su -
 vi ~/.ssh/authorized_keys
 
-#luego remtear desde bastion
+#luego remotear desde bastion
 ssh centos@shared-postgresql.atos-integracam.int
 ssh centos@dev-postgresql.atos-integracam.int
 ssh centos@release-postgresql.atos-integracam.int
 
-#instalar
+#instalar en bastion devops - solo una vez
 sudo apt install sshpass
 
 ###################################################################
@@ -389,8 +443,8 @@ yum install wget -y
 wget https://api.developers.crunchydata.com/downloads/repo/rpm-centos/postgresql14/crunchypg14.repo
 wget https://api.developers.crunchydata.com/downloads/gpg/RPM-GPG-KEY-crunchydata-dev
 #Mover
-mv RPM-GPG-KEY-crunchydata-dev /etc/pki/rpm-gpg
-mv crunchypg14.repo /etc/yum.repos.d
+sudo mv RPM-GPG-KEY-crunchydata-dev /etc/pki/rpm-gpg
+sudo mv crunchypg14.repo /etc/yum.repos.d
 #Verificar repos
 sudo dnf repolist
 #Install EPEL repositories:
@@ -426,6 +480,7 @@ ansible-playbook deploy_pgcluster.yml
 psql -h dev-postgresql.atos-integracam.int -p 6432 -U desarrollo -c "select now()" -d bddev
 psql -h release-postgresql.atos-integracam.int -p 6432 -U release -c "select now()" -d bdrelease
 psql -h shared-postgresql.atos-integracam.int -p 6432 -U devops -c "select now()" -d keycloak
+psql -h pro-postgresql.atos-integracam.int -p 6432 -U pro -c "select now()" -d bdpro
 
 systemctl status postgresql-14
 systemctl status pgbouncer
@@ -433,17 +488,6 @@ systemctl status pgbouncer
 ###################################################################
 ########## Ansible Kubernetes - KubeSpray
 ###################################################################
-#release
-kubernetes_private_dns = [
-  "release-k8s-0.atos-integracam.int",
-  "release-k8s-1.atos-integracam.int",
-]
-kubernetes_private_ip = [
-  "10.36.13.97",
-  "10.36.13.23",
-]
-ssh root@release-k8s-0.atos-integracam.int
-ssh root@release-k8s-1.atos-integracam.int
 #dev
 kubernetes_private_dns = [
   "dev-k8s-0.atos-integracam.int",
@@ -455,6 +499,28 @@ kubernetes_private_ip = [
 ]
 ssh root@dev-k8s-0.atos-integracam.int
 ssh root@dev-k8s-1.atos-integracam.int
+#release
+kubernetes_private_dns = [
+  "release-k8s-0.atos-integracam.int",
+  "release-k8s-1.atos-integracam.int",
+]
+kubernetes_private_ip = [
+  "10.36.13.97",
+  "10.36.13.23",
+]
+ssh root@release-k8s-0.atos-integracam.int
+ssh root@release-k8s-1.atos-integracam.int
+#pro
+kubernetes_private_dns = [
+  "pro-k8s-0.atos-integracam.int",
+  "pro-k8s-1.atos-integracam.int",
+]
+kubernetes_private_ip = [
+  "10.36.15.28",
+  "10.36.15.114",
+]
+ssh root@pro-k8s-0.atos-integracam.int
+ssh root@pro-k8s-1.atos-integracam.int
 ######################################################################################
 #Crear y ejecutar remotamente
 ######################################################################################
@@ -474,25 +540,20 @@ df -h
 ######################################################################################
 #Configurar disco para kubernetes
 ######################################################################################
-ssh centos@release-k8s-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
-ssh centos@release-k8s-1.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
-
+#dev
 ssh centos@dev-k8s-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
 ssh centos@dev-k8s-1.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
+#release
+ssh centos@release-k8s-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
+ssh centos@release-k8s-1.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
+#pro
+ssh centos@pro-k8s-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
+ssh centos@pro-k8s-1.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
 
 ######################################################################################
 #Ansible role Kubernetes
 ######################################################################################
 git clone https://github.com/kubernetes-sigs/kubespray.git
-#configurar release
-cd kubespray
-sudo apt install python3-pip
-pip install -r requirements.txt
-cp -rfp inventory/sample inventory/release
-declare -a IPS=(10.36.13.97 10.36.13.23)
-CONFIG_FILE=inventory/release/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
-USERNAME=centos
-ansible-playbook -i inventory/release/hosts.yaml  -u $USERNAME --become --become-user=root cluster.yml
 #configurar dev
 cd kubespray
 sudo apt install python3-pip
@@ -502,7 +563,24 @@ declare -a IPS=(10.36.11.116 10.36.11.11)
 CONFIG_FILE=inventory/dev/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
 USERNAME=centos
 ansible-playbook -i inventory/dev/hosts.yaml  -u $USERNAME --become --become-user=root cluster.yml
-
+#configurar release
+cd kubespray
+sudo apt install python3-pip
+pip install -r requirements.txt
+cp -rfp inventory/sample inventory/release
+declare -a IPS=(10.36.13.97 10.36.13.23)
+CONFIG_FILE=inventory/release/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+USERNAME=centos
+ansible-playbook -i inventory/release/hosts.yaml  -u $USERNAME --become --become-user=root cluster.yml
+#configurar pro
+cd kubespray
+sudo apt install python3-pip
+pip install -r requirements.txt
+cp -rfp inventory/sample inventory/pro
+declare -a IPS=(10.36.15.28 10.36.15.114)
+CONFIG_FILE=inventory/pro/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+USERNAME=centos
+ansible-playbook -i inventory/pro/hosts.yaml  -u $USERNAME --become --become-user=root cluster.yml
 ######################################################################################
 #Obtener credenciales Kubernetes
 ######################################################################################
@@ -581,20 +659,31 @@ tag: 2.368-jdk17
 serviceType: LoadBalancer
 servicePort: 80
 installPlugins:
-    - kubernetes:3600.v144b_cd192ca_a_
+    #- kubernetes:3600.v144b_cd192ca_a_
+    - kubernetes:3802.vb_b_600831fcb_3
     - workflow-aggregator:581.v0c46fa_697ffd
     - git:4.11.3
     - configuration-as-code:1569.vb_72405b_80249
-    - configuration-as-code:1512.vb_79d418d5fc8
+    #- configuration-as-code:1512.vb_79d418d5fc8
     #- configuration-as-code:1429.v09b_044a_c93de por error al iniciar contenedor init, problemas dependencias
 #install
 helm install jenkins --namespace jenkins \
     -f values-itc.yaml \
     jenkins/jenkins;
 #upgrade version imagen contenedor por error en grupo seguridad jenkins
+# Tuve que actualizar el Configmap y setear kubernetes:3802.vb_b_600831fcb_3 y configuration-as-code:1569.vb_72405b_80249
+# ya que daba error en el contenedor init
+# solo esto hacer en actualizar, cuando se reinstale todo ya coge los valores de installPlugins en el helmchart
+# luego de actualizar configmap ejecutar:
 helm upgrade jenkins --namespace jenkins \
     --reuse-values \
     --set controller.tag=2.361.2-lts-jdk17 \
+    --wait \
+    jenkins/jenkins;
+#upgrade version imagen contenedor por error https://issues.jenkins.io/browse/JENKINS-70392
+helm upgrade jenkins --namespace jenkins \
+    --reuse-values \
+    --set controller.tag=2.375.2-lts-jdk17 \
     --wait \
     jenkins/jenkins;
 # LoadBalancer - error al crear LoadBalancer
@@ -766,6 +855,16 @@ private_ip = [
 server_security_group_id = [
   "sg-06f3c89c3ae48c330",
 ]
+#pro
+private_dns = [
+  "pro-nfs-0.atos-integracam.int",
+]
+private_ip = [
+  "10.36.15.99",
+]
+server_security_group_id = [
+  "sg-0207d34d283e9dd9f",
+]
 ######################################################################################
 #Crear y ejecutar remotamente
 ######################################################################################
@@ -787,6 +886,7 @@ df -h
 ######################################################################################
 ssh centos@dev-nfs-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_nfs_storage.sh
 ssh centos@release-nfs-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_nfs_storage.sh
+ssh centos@pro-nfs-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_nfs_storage.sh
 
 #ssh centos@release-k8s-0.atos-integracam.int "bash -s" -- < /home/ubuntu/kubernetes-util/init_k8s_containerd_storage.sh  
 ######################################################################################
@@ -807,39 +907,49 @@ systemctl start nfs-idmapd
 mkdir /datos/professional
 mkdir /datos/patient
 #add mirth
-mkdir /datos/mirth
+#mkdir /datos/mirth
 
 chmod  777 /datos/professional
 chmod  777 /datos/patient
 #add mirth
-chmod  777 /datos/mirth
+#chmod  777 /datos/mirth
 
 #modificar /etc/exports
 vi /etc/exports
-#dev
+
+#dev - agregar
 /datos/professional 10.36.10.0/23(rw,sync,no_root_squash)
 /datos/patient 10.36.10.0/23(rw,sync,no_root_squash)
 #add mirth
-/datos/mirth 10.36.8.0/23(rw,sync,no_root_squash)
-...
+#/datos/mirth 10.36.8.0/23(rw,sync,no_root_squash)
+#Ejecutar comandos
 exportfs -r
 showmount -e localhost
-...
+#Resultado 
 Export list for localhost:
 /datos/patient      10.36.10.0/23
 /datos/professional 10.36.10.0/23
-...
-#release
+#release - agregar
 /datos/professional 10.36.12.0/23(rw,sync,no_root_squash)
 /datos/patient 10.36.12.0/23(rw,sync,no_root_squash)
-...
+#Ejecutar comandos
 exportfs -r
 showmount -e localhost
-...
+#Resultado 
 Export list for localhost:
 /datos/patient      10.36.12.0/23
 /datos/professional 10.36.12.0/23
-...
+#pro - agregar
+/datos/professional 10.36.14.0/23(rw,sync,no_root_squash)
+/datos/patient 10.36.14.0/23(rw,sync,no_root_squash)
+#Ejecutar comandos
+exportfs -r
+showmount -e localhost
+#Resultado 
+Export list for localhost:
+/datos/patient      10.36.14.0/23
+/datos/professional 10.36.14.0/23
+
 ######################################################################################
 #Configurar cliente NFS en K8s
 ######################################################################################
