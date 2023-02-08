@@ -80,6 +80,7 @@ pass:admin2022
 show pools;
 SHOW STATS_TOTALS;
 
+#Vale
 psql -U postgres -p 6432 pgbouncer
 pass: postgres-pass
 SHOW STATS_TOTALS;
