@@ -314,6 +314,22 @@ server_security_group_id = [
   "sg-0e27c74e4de2804f1",
 ]
 ###################################################################
+########## Datos de LoadBalancer Shared
+###################################################################
+#output
+private_dns = [
+  "shared-loadbalancer-0.atos-integracam.int",
+]
+public_dns = [
+  "ec2-3-248-233-204.eu-west-1.compute.amazonaws.com",
+]
+public_ip = [
+  "3.248.233.204",
+]
+server_security_group_id = [
+  "sg-02018a8e94a1b29ce",
+]
+###################################################################
 ########## Remotear
 ###################################################################
 #conectar a bastion devops
@@ -379,6 +395,12 @@ vi kp-pro-kp-pro-nfs-zuox.pem
 chmod 400 kp-pro-kp-pro-nfs-zuox.pem
 ssh -i "kp-pro-kp-pro-nfs-zuox.pem" centos@pro-nfs-0.atos-integracam.int
 ssh root@pro-nfs-0.atos-integracam.int
+#LoadBalancer shared
+#nodo-0
+vi kp-shared-kp-shared-loadbalancer-xupx.pem
+chmod 400 kp-shared-kp-shared-loadbalancer-xupx.pem
+ssh -i "kp-shared-kp-shared-loadbalancer-xupx.pem" centos@shared-loadbalancer-0.atos-integracam.int
+ssh root@shared-loadbalancer-0.atos-integracam.int
 
 #copiar ~/.ssh/id_rsa.pub del Bastion DevOps 
 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCaN36WO6WgqMuIeYEUYDkA81+xdh9TgIdKxpibb4byS8+t56xtkCg4VToEWPnaVoznpxaf3rywExcRwRXhWySwGy3lhyemi0k+xN07s72gKreWZyUyZYr1iKcXqMP0gKXfg7SporQ31+m3suS6vEzUF9cm2XptEMN5dRdyTTVb9XHfcx4femrkiz638aKMGQ9+zfeJStkl2s7jeUsas3LC8E0Mh++L+sZRS0ex2b6mqyVZZC2uw6Z8JgUVtqmBl8Si+J0AeWQ4z9W5oQo882PZStoaMGLe2P3lJn0UYRCVS1oo5/W43rwY6Gi5aCi/g1WEdfRKB0ztHTOOBNP0C+bd3dpJlhsE4B/L7qkWtRXLFuThX4VWDe+KA1P+omdQ22HlmcOjBBK/rbwmqbe5Q3TUhS0+1aUezXko45DlFue/ZV4CnvgNOIWe/hFldp7jG9QspRv9knebg+osZ+u1fu5VjapNTzp3shJXKNxbjEN8RHDCUf5+Aat2LXTDi9bdLY0= ubuntu@ip-10-36-9-49
@@ -1039,3 +1061,23 @@ ssh root@dev-k8s-0.atos-integracam.int
 ssh root@dev-k8s-1.atos-integracam.int
 
 kubectl exec nfs-busybox-7d7cff6d49-ff65m -- cat /mnt/index.html
+
+######################################################################################
+#Configurar LoadBalancer Shared - Nginx
+######################################################################################
+######################################################################################
+#conectarse
+ssh centos@shared-loadbalancer-0.atos-integracam.int
+#actualizar
+sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+sudo yum install -y epel-release
+sudo yum update -y
+#instalar nginx
+sudo yum install nginx -y
+nginx -v
+#nginx version: nginx/1.14.1
+sudo systemctl start nginx
+sudo systemctl enable nginx
+sudo systemctl status nginx
+# verificar web con ip publica
+http://ec2-3-248-233-204.eu-west-1.compute.amazonaws.com
