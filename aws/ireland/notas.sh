@@ -330,6 +330,22 @@ server_security_group_id = [
   "sg-02018a8e94a1b29ce",
 ]
 ###################################################################
+########## Datos de iot Pro
+###################################################################
+#output
+private_dns = [
+  "pro-iot-0.atos-integracam.int",
+]
+public_dns = [
+  "ec2-3-252-242-31.eu-west-1.compute.amazonaws.com",
+]
+public_ip = [
+  "3.252.242.31",
+]
+server_security_group_id = [
+  "sg-0d1fd47f9f0bff57e",
+]
+###################################################################
 ########## Remotear
 ###################################################################
 #conectar a bastion devops
@@ -930,11 +946,19 @@ mkdir /datos/professional
 mkdir /datos/patient
 #add mirth
 #mkdir /datos/mirth
+#add technical 20230216 - por leyla
+mkdir /datos/technical
+#add openldap 20230228 - por mi
+mkdir /datos/openldap
 
-chmod  777 /datos/professional
-chmod  777 /datos/patient
+chmod  755 /datos/professional
+chmod  755 /datos/patient
 #add mirth
-#chmod  777 /datos/mirth
+#chmod  755 /datos/mirth
+#add technical 20220216 - por leyla
+chmod  755 /datos/technical
+#add openldap 20230228 - por mi
+chmod  755 /datos/openldap
 
 #modificar /etc/exports
 vi /etc/exports
@@ -944,6 +968,8 @@ vi /etc/exports
 /datos/patient 10.36.10.0/23(rw,sync,no_root_squash)
 #add mirth
 #/datos/mirth 10.36.8.0/23(rw,sync,no_root_squash)
+#add technical 20220216 - por leyla
+/datos/technical 10.36.10.0/23(rw,sync,no_root_squash)
 #Ejecutar comandos
 exportfs -r
 showmount -e localhost
@@ -954,6 +980,8 @@ Export list for localhost:
 #release - agregar
 /datos/professional 10.36.12.0/23(rw,sync,no_root_squash)
 /datos/patient 10.36.12.0/23(rw,sync,no_root_squash)
+#add technical 20220216 - por leyla
+/datos/technical 10.36.12.0/23(rw,sync,no_root_squash)
 #Ejecutar comandos
 exportfs -r
 showmount -e localhost
@@ -964,6 +992,10 @@ Export list for localhost:
 #pro - agregar
 /datos/professional 10.36.14.0/23(rw,sync,no_root_squash)
 /datos/patient 10.36.14.0/23(rw,sync,no_root_squash)
+#add technical 20220216 - por leyla
+/datos/technical 10.36.14.0/23(rw,sync,no_root_squash)
+#add openldap 20230228 - por mi
+/datos/openldap 10.36.14.0/23(rw,sync,no_root_squash)
 #Ejecutar comandos
 exportfs -r
 showmount -e localhost
@@ -1081,3 +1113,9 @@ sudo systemctl enable nginx
 sudo systemctl status nginx
 # verificar web con ip publica
 http://ec2-3-248-233-204.eu-west-1.compute.amazonaws.com
+######################################################################################
+#Configurar iot
+######################################################################################
+######################################################################################
+#conectarse
+ssh -i "kp-pro-iot.pem" centos@pro-iot-0.atos-integracam.int
